@@ -3,7 +3,10 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 #include<windows.h>
-//#include <opencv2/imgproc/imgproc.hpp>
+#include <cstdio>
+
+//#include "opencv2/opencv.hpp"
+
 using namespace cv;
 
 void addDotToImage(Mat &M, int iRowDotCenter, int iColDotCenter, int dotSizePixel)
@@ -47,49 +50,67 @@ void addCrosshairToImage(Mat& M, int iRowCrosshairCenter, int iColCrosshairCente
     int nImageCol = M.cols;
     int nImageChan = M.channels();
 
-    for (int iRowImage = 0; iRowImage < crosshairSizePixel; iRowImage++)
+    for (int iRowCrosshair = 0; iRowCrosshair < crosshairSizePixel; iRowCrosshair++)
     {
 
-        int iRow = iRowCrosshairCenter + iRowImage - (crosshairSizePixel - 1) / 2;
+        int iRow = iRowCrosshairCenter + iRowCrosshair - (crosshairSizePixel - 1) / 2;
 
-        uchar* p;
-
-        p = M.ptr<uchar>(iRow);
-
-        int iCol = iColCrosshairCenter;
-
-        for (int iChan = 0; iChan < nImageChan; iChan++)
+        if ((iRow >= 0) && (iRow < nImageRow))
         {
 
-            p[iCol * nImageChan + iChan] = 255;
+            uchar* p;
+
+            p = M.ptr<uchar>(iRow);
+
+            int iColCrosshair = iColCrosshairCenter;
+
+            if ((iColCrosshair >= 0) && (iColCrosshair < nImageCol))
+            {
+
+                for (int iChan = 0; iChan < nImageChan; iChan++)
+                {
+
+                    p[iColCrosshair * nImageChan + iChan] = 255;
+
+                }
+
+            }
 
         }
 
         
 
     }
+       
 
-    
-
-    int iRow = iRowCrosshairCenter;
-
-    uchar* p;
-
-    p = M.ptr<uchar>(iRow);
-
-    for (int iColImage = 0; iColImage < crosshairSizePixel; iColImage++)
+    if ((iRowCrosshairCenter >= 0) && (iRowCrosshairCenter < nImageRow))
     {
 
-        int iCol = iColCrosshairCenter + iColImage - (crosshairSizePixel - 1) / 2;
 
-        for (int iChan = 0; iChan < nImageChan; iChan++)
+        uchar* p;
+
+        p = M.ptr<uchar>(iRowCrosshairCenter);
+
+        for (int iColImage = 0; iColImage < crosshairSizePixel; iColImage++)
         {
 
-            p[iCol * nImageChan + iChan] = 255;
+            int iColCrosshair = iColCrosshairCenter + iColImage - (crosshairSizePixel - 1) / 2;
+
+            if ((iColCrosshair >= 0) && (iColCrosshair < nImageCol))
+            {
+
+                for (int iChan = 0; iChan < nImageChan; iChan++)
+                {
+
+                    p[iColCrosshair * nImageChan + iChan] = 255;
+
+                }
+
+            }
 
         }
 
-    }    
+    }
 
 }
 
@@ -99,49 +120,65 @@ void addBoxToImage(Mat& M, int iRowBoxCenter, int iColBoxCenter, int boxSizePixe
     int nImageCol = M.cols;
     int nImageChan = M.channels();
 
-    for (int iRowImage = 0; iRowImage < boxSizePixel; iRowImage++)
+    for (int iRowBox = 0; iRowBox < boxSizePixel; iRowBox++)
     {
-        int iColLeft = iColBoxCenter - (boxSizePixel - 1) / 2;
+        int iColBoxLeft = iColBoxCenter - (boxSizePixel - 1) / 2;
 
-        int iColRight = iColBoxCenter + (boxSizePixel - 1) / 2;
+        int iColBoxRight = iColBoxCenter + (boxSizePixel - 1) / 2;
 
-        int iRow = iRowBoxCenter + iRowImage - (boxSizePixel - 1) / 2;
-
-        uchar* p;
-
-        p = M.ptr<uchar>(iRow);
-
-        for (int iChan = 0; iChan < nImageChan; iChan++)
+        int iRow = iRowBoxCenter + iRowBox - (boxSizePixel - 1) / 2;
+                
+        if ((iRow >= 0) && (iRow < nImageRow))
         {
 
-            p[iColLeft*nImageChan + iChan] = 255;
+            uchar* p;
 
-            p[iColRight*nImageChan + iChan] = 255;
+            p = M.ptr<uchar>(iRow);
 
-        }
-    
+            for (int iChan = 0; iChan < nImageChan; iChan++)
+            {
+
+                if ((iColBoxLeft >= 0) && (iColBoxLeft < nImageCol))
+                {
+                    p[iColBoxLeft * nImageChan + iChan] = 255;
+                }
+
+                if ((iColBoxRight >= 0) && (iColBoxRight < nImageCol))
+                {
+                    p[iColBoxRight * nImageChan + iChan] = 255;
+                }
+
+            }
+
+        }   
 
     }
-
-
 
     int iRowTop = iRowBoxCenter - (boxSizePixel - 1) / 2;
 
     uchar* p;
 
-    p = M.ptr<uchar>(iRowTop);
-
-    for (int iColImage = 0; iColImage < boxSizePixel; iColImage++)
+    if ((iRowTop >= 0) && (iRowTop < nImageRow))
     {
 
-        int iCol = iColBoxCenter + iColImage - (boxSizePixel - 1) / 2;
+        p = M.ptr<uchar>(iRowTop);
 
-        for (int iChan = 0; iChan < nImageChan; iChan++)
+        for (int iColBox = 0; iColBox < boxSizePixel; iColBox++)
         {
 
-            p[iCol * nImageChan + iChan] = 255;
+            int iCol = iColBoxCenter + iColBox - (boxSizePixel - 1) / 2;
 
-            p[iCol * nImageChan + iChan] = 255;
+            if ((iCol >= 0) && (iCol < nImageCol))
+            {
+
+                for (int iChan = 0; iChan < nImageChan; iChan++)
+                {
+
+                    p[iCol * nImageChan + iChan] = 255;
+
+                }
+            
+            }
 
         }
 
@@ -149,19 +186,27 @@ void addBoxToImage(Mat& M, int iRowBoxCenter, int iColBoxCenter, int boxSizePixe
 
     int iRowBottom = iRowBoxCenter + (boxSizePixel - 1) / 2;    
 
-    p = M.ptr<uchar>(iRowBottom);
-
-    for (int iColImage = 0; iColImage < boxSizePixel; iColImage++)
+    if ((iRowBottom >= 0) && (iRowBottom < nImageRow))
     {
 
-        int iCol = iColBoxCenter + iColImage - (boxSizePixel - 1) / 2;
+        p = M.ptr<uchar>(iRowBottom);
 
-        for (int iChan = 0; iChan < nImageChan; iChan++)
+        for (int iColBox = 0; iColBox < boxSizePixel; iColBox++)
         {
 
-            p[iCol * nImageChan + iChan] = 255;
+            int iCol = iColBoxCenter + iColBox - (boxSizePixel - 1) / 2;
 
-            p[iCol * nImageChan + iChan] = 255;
+            if ((iCol >= 0) && (iCol < nImageCol))
+            {
+
+                for (int iChan = 0; iChan < nImageChan; iChan++)
+                {
+
+                    p[iCol * nImageChan + iChan] = 255;
+
+                }
+
+            }
 
         }
 
@@ -211,9 +256,9 @@ Mat findImageDiff(Mat& M1, Mat& M2)
 
 }
 
-void findPeakDiffVal(Mat M, int& iRowPeak, int& iColPeak)
+void findPeakDiffVal(Mat M, int& iRowPeak, int& iColPeak, int& peakDiffVal)
 {
-    int peakDiffVal = 0;
+    peakDiffVal = 0;
 
     iRowPeak = 0;
     iColPeak = 0;
@@ -254,8 +299,27 @@ int main()
 
     VideoCapture cap1(0); // Adjust the camera index as needed
 
-    if (!cap1.open(1))
+    if (!cap1.open(0))
         return 0;
+
+    // Configuration for web cam
+    cap1.set(CAP_PROP_AUTOFOCUS, 0);
+    cap1.set(CAP_PROP_FOCUS, 100);
+    cap1.set(CAP_PROP_FRAME_HEIGHT, 720);
+    cap1.set(CAP_PROP_FRAME_WIDTH, 1280);
+
+    // Configuration for dual sync camera
+    //cap1.set(CAP_PROP_FRAME_HEIGHT, 720);
+    //cap1.set(CAP_PROP_FRAME_WIDTH, 2560);
+
+    std::vector<int> calDataOutputRow = std::vector<int>(0);
+    std::vector<int> calDataOutputCol = std::vector<int>(0);
+    std::vector<int> calDataInputRow = std::vector<int>(0);
+    std::vector<int> calDataInputCol = std::vector<int>(0);
+
+    FILE* fp;
+    fp = fopen("calData.txt", "w");
+
 
     Mat camera1Frame1;
     Mat camera1Frame2;
@@ -268,13 +332,13 @@ int main()
 
     String windowName = "Calibration Window";
 
-    int nImageRow = 1000;
-    int nImageCol = 1800;
+    int nImageRow = 2000;
+    int nImageCol = 3500;
 
     int screenCalDotCornerOffset = 0;
     int screenCalDotSize = 1;
 
-    int cameraCalDotSize = 7;
+    int cameraCalDotSize = 3;
 
     // Display blank image.
     Mat M(nImageRow, nImageCol, CV_8UC1, Scalar(0));
@@ -287,9 +351,9 @@ int main()
 
     addDotToImage(M, nImageRow - 1 - screenCalDotCornerOffset, nImageCol - 1 - screenCalDotCornerOffset, screenCalDotSize);  
 
-    addCrosshairToImage(M, 100, 100, 9);
+    //addCrosshairToImage(M, 100, 100, 9);
 
-    addBoxToImage(M, 100, 100, 13);
+    //addBoxToImage(M, 100, 100, 13);
 
     imshow(windowName, M);
 
@@ -297,17 +361,108 @@ int main()
 
     int key = waitKey(0); // Wait for a keystroke in the window  
 
-    int iRowDotCenterStart = 100;
 
-    int iRowDotCenter = iRowDotCenterStart;
 
-    int iColDotCenterStart = 100;
+    int iRowDotCenterStart = 10;
 
-    int iColDotCenter = iColDotCenterStart;
+    int iColDotCenterStart = 10;
 
     bool isDotDisplayed = true;
 
-    for (;;)
+
+
+
+
+    // Display two images. One all black and a second with many dots. Find the maximum difference in the two imageas and use this as a threshold for later tests.
+
+    // Display image of screen with no dot.
+
+    //Mat M(nImageRow, nImageCol, CV_8UC1, Scalar(0));
+
+    imshow(windowName, M);
+
+    waitKey(1); // Wait for a keystroke in the window
+
+    Sleep(50);
+
+    // Capture image of screen.
+
+    for (int iFrameCap = 0; iFrameCap < 6; iFrameCap++) {
+        cap1 >> camera1Frame1;
+    }
+
+    // Display image of screen with dot.
+
+    int iRowDotCenter = iRowDotCenterStart;
+
+    int iColDotCenter = iColDotCenterStart;
+
+    while (iRowDotCenter < nImageRow) 
+    {
+
+        while (iColDotCenter < nImageCol)
+        {
+
+            addDotToImage(M, iRowDotCenter, iColDotCenter, cameraCalDotSize);
+
+            iColDotCenter += 100;
+
+        }
+
+        iRowDotCenter += 100;
+
+        iColDotCenter = iColDotCenterStart;
+
+    }
+    
+    imshow(windowName, M);
+
+    waitKey(1);
+
+    Sleep(50);
+
+    // Capture image of screen.
+
+    for (int iFrameCap = 0; iFrameCap < 6; iFrameCap++) {
+        cap1 >> camera1Frame2;
+    }
+
+    // Compare the two images. Subtract difference in values to find position of dot displayed on screen.
+
+
+    Mat camera1FrameDiff = findImageDiff(camera1Frame1, camera1Frame2);
+
+    int iRowPeak, iColPeak, peakDiffVal;
+
+    findPeakDiffVal(camera1FrameDiff, iRowPeak, iColPeak, peakDiffVal);
+
+    addBoxToImage(camera1FrameDiff, iRowPeak, iColPeak, 13);
+
+    addBoxToImage(camera1Frame2, iRowPeak, iColPeak, 13);
+
+    addCrosshairToImage(camera1Frame2, iRowPeak, iColPeak, 9);
+
+    printf("iRow Peak = % d\t iCol Peak = % d\n", iRowPeak, iColPeak);
+
+
+
+    imshow("Camera1 Frame Diff", camera1FrameDiff);
+
+    imshow("Camera1 Frame2", camera1Frame2);
+
+    waitKey(1);
+
+    Sleep(50);
+
+    iRowDotCenter = iRowDotCenterStart;    
+
+    iColDotCenter = iColDotCenterStart;
+
+    int rowDotInc = 100;
+
+    int colDotInc = 100;
+    
+    while (iColDotCenter < nImageCol)
     {
 
         
@@ -324,7 +479,7 @@ int main()
 
         // Capture image of screen.
 
-        for (int iFrameCap = 0; iFrameCap < 10; iFrameCap++) {
+        for (int iFrameCap = 0; iFrameCap < 6; iFrameCap++) {
             cap1 >> camera1Frame1;
         }
 
@@ -340,7 +495,7 @@ int main()
 
         // Capture image of screen.
 
-        for (int iFrameCap = 0; iFrameCap < 10; iFrameCap++) {
+        for (int iFrameCap = 0; iFrameCap < 6; iFrameCap++) {
             cap1 >> camera1Frame2;
         }
 
@@ -351,18 +506,34 @@ int main()
 
         
 
-        int iRowPeak, iColPeak;
+        int iRowPeak, iColPeak, peakDiffValCurrent;
 
-        findPeakDiffVal(camera1FrameDiff, iRowPeak, iColPeak);
+        findPeakDiffVal(camera1FrameDiff, iRowPeak, iColPeak, peakDiffValCurrent);
 
-        addBoxToImage(camera1FrameDiff, iRowPeak, iColPeak, 13);
+        if (peakDiffValCurrent > round(peakDiffVal * 0.40)) {
 
-        addBoxToImage(camera1Frame2, iRowPeak, iColPeak, 13);   
 
-        addCrosshairToImage(camera1Frame2, iRowPeak, iColPeak, 9);
+            addBoxToImage(camera1FrameDiff, iRowPeak, iColPeak, 13);
 
-        printf("iRow Peak = % d\t iCol Peak = % d\n", iRowPeak, iColPeak);
+            addBoxToImage(camera1Frame2, iRowPeak, iColPeak, 13);
 
+            addCrosshairToImage(camera1Frame2, iRowPeak, iColPeak, 9);
+
+            printf("iRow Peak = % d\t iCol Peak = % d\n", iRowPeak, iColPeak);
+
+            calDataOutputRow.push_back(iRowDotCenter);
+            calDataOutputCol.push_back(iColDotCenter);
+            calDataInputRow.push_back(iRowPeak);
+            calDataInputCol.push_back(iColPeak);
+
+            fprintf(fp, "%d,%d,%d,%d\n",iRowDotCenter,iColDotCenter,iRowPeak,iColPeak );
+
+        }
+        else {
+
+            printf("no peak found\n");
+
+        }
         
 
         imshow("Camera1 Frame Diff", camera1FrameDiff);
@@ -374,21 +545,20 @@ int main()
 
         Sleep(50);
 
-        iRowDotCenter += 100;
+        iRowDotCenter += rowDotInc;
 
         if (iRowDotCenter > nImageRow - 100)
         {
             iRowDotCenter = iRowDotCenterStart;
 
-            iColDotCenter += 100;
+            iColDotCenter += colDotInc;
 
-            if (iColDotCenter > nImageCol - 100)
-            {
-                iColDotCenter = iColDotCenterStart;
-            }
+            
         }
 
     }
+
+    fclose(fp);
     
     return 0;
 }
